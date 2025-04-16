@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF to Word Converter</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/dropzone.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 50px;
+        }
+        .dropzone {
+            border: 2px dashed #0087F7;
+            border-radius: 5px;
+            padding: 50px;
+            margin: 20px auto;
+            max-width: 500px;
+        }
+        .dz-message {
+            font-size: 18px;
+        }
+        .convert-btn {
+            background: #0087F7;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <h1>PDF to Word Converter</h1>
+    <p>Upload a PDF file to convert it to an editable Word document.</p>
+    
+    <form action="/" class="dropzone" id="pdfUpload" enctype="multipart/form-data">
+        <div class="dz-message">Drop PDF here or click to upload</div>
+    </form>
+    
+    <button id="convertBtn" class="convert-btn" disabled>Convert to Word</button>
+    <div id="status"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/dropzone.min.js"></script>
+    <script>
+        Dropzone.options.pdfUpload = {
+            paramName: "file",
+            maxFiles: 1,
+            acceptedFiles: ".pdf",
+            init: function() {
+                this.on("addedfile", function() {
+                    document.getElementById("convertBtn").disabled = false;
+                });
+            }
+        };
+
+        document.getElementById("convertBtn").addEventListener("click", function() {
+            const dropzone = Dropzone.forElement("#pdfUpload");
+            if (dropzone.files.length === 0) {
+                alert("Please upload a PDF file first!");
+                return;
+            }
+            
+            document.getElementById("status").innerHTML = "Converting...";
+            dropzone.processQueue();
+            
+            dropzone.on("success", function(file, response) {
+                document.getElementById("status").innerHTML = "Conversion complete! Download will start automatically.";
+            });
+            
+            dropzone.on("error", function(file, error) {
+                document.getElementById("status").innerHTML = "Error: " + error;
+            });
+        });
+    </script>
+</body>
+</html>
